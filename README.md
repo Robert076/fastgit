@@ -1,5 +1,5 @@
 # fastgit
-Bash script to make commits and pushes much faster while coding.
+Bash script to make commits and pushes faster while coding.
 
 ## Setup
 
