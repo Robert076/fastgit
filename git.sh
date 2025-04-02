@@ -10,15 +10,17 @@ fi
 if [ $# -eq 0 ]; then
 
   git add .
-  git commit -m "$commitMessage"
 
 else
+
   for file in "$@"
   do
     git add $file
   done
-  git commit -m "$commitMessage"
+  
 fi
+
+git commit -m "$commitMessage"
 
 read -p "Push to remote? (y/n): " doYouWantToPush 
 
