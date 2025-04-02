@@ -7,10 +7,20 @@ if [[ -z "$commitMessage" ]]; then
   exit 1
 fi
 
-git add .
-git commit -m "$commitMessage"
+if [ $# -eq 0 ]; then
 
-read -p "Push to remote? (y/n): " doYouWantToPush
+  git add .
+  git commit -m "$commitMessage"
+
+else
+  for file in "$@"
+  do
+    git add $file
+  done
+  git commit -m "$commitMessage"
+fi
+
+read -p "Push to remote? (y/n): " doYouWantToPush 
 
 if [[ "$doYouWantToPush" == "y" || "$doYouWantToPush" == "Y" ]]; then
   git push
