@@ -1,6 +1,11 @@
 #!/bin/bash
 
-read -p "Commit message: " commitMessage
+if [ -z "$1" ]; then
+  read -r -p "Commit message: " commitMessage
+else
+  commitMessage=$1
+  shift
+fi
 
 if [[ -z "$commitMessage" ]]; then
   echo "Commit message cannot be empty"
@@ -8,22 +13,23 @@ if [[ -z "$commitMessage" ]]; then
 fi
 
 if [ $# -eq 0 ]; then
-
+  echo "Adding all changes..."
   git add .
-
 else
-
-  for file in "$@"
-  do
-    git add $file
+  echo "Adding specified files..."
+  for file in "$@"; do
+    git add -- "$file"
   done
-  
 fi
 
-git commit -m "$commitMessage"
+echo "Committing..."
+if ! git commit -m "$commitMessage"; then
+  echo "Commit failed"
+  exit 1
+fi
 
-read -p "Push to remote? (y/n): " doYouWantToPush 
-
-if [[ "$doYouWantToPush" == "y" || "$doYouWantToPush" == "Y" ]]; then
-  git push
+read -r -p "Push to remote? (y/N): " doYouWantToPush
+if [[ "$doYouWantToPush" =~ ^[Yy]$ ]]; then
+  echo "Pushing to remote..."
+  git push || { echo "Push failed"; exit 1; }
 fi
