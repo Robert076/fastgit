@@ -30,6 +30,15 @@ fi
 
 read -r -p "Push to remote? (y/N): " doYouWantToPush
 if [[ "$doYouWantToPush" =~ ^[Yy]$ ]]; then
-  echo "Pushing to remote..."
-  git push || { echo "Push failed"; exit 1; }
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+
+  upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+
+  if [[ -z "$upstream" ]]; then
+    echo "No upstream configured for branch '$currentBranch'. Setting upstream and pushing..."
+    git push --set-upstream origin "$currentBranch" || { echo "Push failed"; exit 1; }
+  else
+    echo "Pushing to remote..."
+    git push || { echo "Push failed"; exit 1; }
+  fi
 fi
